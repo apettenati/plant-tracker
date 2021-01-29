@@ -1,7 +1,7 @@
 from flask import Flask, request
 import psycopg2
 from configparser import ConfigParser
-from Postgres import get_user, add_plant, get_plant, update_plant, delete_plant
+from functions import get_user, add_plant, get_plant, update_plant, delete_plant
 
 config = ConfigParser()
 config.read('config.ini')
