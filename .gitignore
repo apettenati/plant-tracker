@@ -1,0 +1,16 @@
+__pycache__/
+
+# virtual environment
+venv/
+
+# postgres config file
+config.ini
+
+# vs code workspace config
+plant-tracker.code-workspace
+
+# old files from initial project
+archive/
+
+# notes on project
+documentation/
