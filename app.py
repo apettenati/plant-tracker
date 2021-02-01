@@ -1,8 +1,11 @@
 from flask import Flask, request
 import psycopg2
 from configparser import ConfigParser
-from functions import get_user, add_plant, get_plant, update_plant, delete_plant
+from plant_queries import add_plant, get_plant, update_plant, delete_plant
+from user_queries import get_user
 
+
+''' establish Postgres connection'''
 config = ConfigParser()
 config.read('config.ini')
 user = config.get('postgres', 'user')
@@ -10,6 +13,7 @@ password = config.get('postgres', 'password')
 database = config.get('postgres', 'database')
 port = config.get('postgres', 'port')
 host = config.get('postgres', 'host')
+
 
 connection = psycopg2.connect(
     host=host,
@@ -19,6 +23,8 @@ connection = psycopg2.connect(
     port=port
 )
 
+
+'''establish flask app''' 
 app = Flask(__name__)
 
 
@@ -26,8 +32,10 @@ app = Flask(__name__)
 def home():
     return 'Hello World'
 
+
 @app.route('/plants', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def plants():
+    '''get data for existing plant'''
     if request.method == 'GET':
         data = request.form
         plant_id = data.get('plant-id')
@@ -46,6 +54,7 @@ def plants():
             return str(plant)
         else:
             return f'Plant {plant_id} is not a valid plant'
+    '''create new plant'''
     if request.method == 'POST':
         data = request.form
         plant_name = data.get('plant-name')
@@ -58,17 +67,22 @@ def plants():
             return f"Plant {plant_id} was created successfully!"
         else:
             return f'Plant was not added'
+    '''edit existing plant'''
     if request.method == 'PUT':
-        #TODO
-        plant = update_plant()
-        return plant
+        data = request.form.to_dict()
+        plant_id = update_plant(connection, data)
+        if plant_id:
+            return plant_id
+        else:
+            return 'Plant {plant_id} was not updated'
+    '''delete existing plant'''
     if request.method == 'DELETE':
         data = request.form
         plant_id = data.get('plant-id')
         plant_exists = get_plant(connection, plant_id)
         if plant_exists:
-            plant = delete_plant(connection, plant_id)
-            return plant
+            plant_id = delete_plant(connection, plant_id)
+            return plant_id
         else:
             return f'Plant {plant_id} does not exist'
     
@@ -77,9 +91,8 @@ def plants():
 def user():
     results = get_user(connection)
     print(results)
-    return {
-     'username': results[1]
-     }
+    return {'username': results[1]}
+
 
 if __name__ == 'main':
     with connection:
