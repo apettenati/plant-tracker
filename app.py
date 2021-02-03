@@ -1,9 +1,9 @@
 from flask import Flask, request
 import psycopg2
 from configparser import ConfigParser
-from plant_queries import add_plant, get_plant, update_plant, delete_plant
-from user_queries import get_user
-
+from planttracker.queries.plant import add_plant, get_plant, update_plant, delete_plant 
+from planttracker.queries.user import get_user
+from planttracker.queries.water import get_last_watered, get_water_tracker, water_plant
 
 ''' establish Postgres connection'''
 config = ConfigParser()
@@ -87,6 +87,24 @@ def plants():
             return f'Plant {plant_id} does not exist'
     
 
+@app.route('/water', methods=['POST', 'GET', 'DELETE'])
+def water():
+    if request.method == 'POST':
+        data = request.form
+        plant_id = data.get('plant-id')
+        plant = water_plant(connection, plant_id)
+        if plant:
+            return plant
+        else:
+            return f'Plant {plant_id} does not exist'
+    if request.method == 'GET':
+        data = request.form
+        plant_id = data.get('plant-id')
+        if plant_id is None:
+            return get_water_tracker(connection)
+        else:
+            return get_last_watered(connection, plant_id)
+
 @app.route('/user')
 def user():
     results = get_user(connection)
@@ -96,4 +114,4 @@ def user():
 
 if __name__ == 'main':
     with connection:
-        app.run(debug=True)
+        app.run()
