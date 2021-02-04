@@ -14,8 +14,9 @@ def water_plant(connection: psycopg2, plant_id: int) -> int:
     with connection.cursor() as cursor:
         cursor.execute(sql_query, (plant_id, datetime.now()))
         connection.commit()
-        result = str(cursor.fetchone()[0])
-        return result
+        result = cursor.fetchone()
+        headers = [column[0] for column in cursor.description]
+        return dict(zip(headers, result))
 
 
 def get_water_tracker(connection: psycopg2) -> dict:
@@ -30,8 +31,7 @@ def get_water_tracker(connection: psycopg2) -> dict:
 
     with connection.cursor() as cursor:
         cursor.execute(sql_query)
-        table = cursor.fetchall()
-        return {'water_tracker': table}
+        return cursor.fetchall()[0][0]
 
 def get_last_watered(connection: psycopg2, plant_id: int) -> dict:
     sql_query = sql.SQL("""
@@ -43,5 +43,4 @@ def get_last_watered(connection: psycopg2, plant_id: int) -> dict:
 
     with connection.cursor() as cursor:
         cursor.execute(sql_query, (plant_id,))
-        plant = cursor.fetchall()
-        return {'plant': plant}
+        return cursor.fetchall()

@@ -22,37 +22,48 @@ def add_plant(connection: psycopg2,
               ) -> int:
     # TODO: refactor to use sql module
     with connection.cursor() as cursor:
-        cursor.execute("""INSERT INTO plants 
-                    (plant_name, adoption_date, pot_size, purchase_location, purchase_price) 
-                    VALUES (%s, %s, %s, %s, %s)
-                    RETURNING plant_id;""", 
-                    (plant_name, adoption_date, pot_size, purchase_location, purchase_price))
-        plant_id = str(cursor.fetchone()[0])
+        cursor.execute("""
+                       INSERT INTO plants 
+                        (plant_name, adoption_date, pot_size, purchase_location, purchase_price) 
+                        VALUES (%s, %s, %s, %s, %s)
+                        RETURNING *;
+                        """, 
+                        (plant_name, adoption_date, pot_size, purchase_location, purchase_price))
         connection.commit()
-        return plant_id
-
+        plant = cursor.fetchone()
+        headers = [column[0] for column in cursor.description]
+        return dict(zip(headers, plant))
 
 def update_plant(connection: psycopg2, data: dict) -> int:
     data = {key.replace("-", "_"): value for key, value in data.items()}
-    sql_query = sql.SQL("UPDATE plants SET {data} WHERE plant_id={id} RETURNING plant_id;").format(
-        data =sql.SQL(', ').join(
-            sql.Composed([sql.Identifier(key), sql.SQL(' = '), sql.Placeholder(key)]) for key in data.keys()
+    sql_query = sql.SQL("""
+                        UPDATE plants
+                        SET {data}
+                        WHERE plant_id={id}
+                        RETURNING *;
+                        """).format(
+            data =sql.SQL(', ').join(
+                sql.Composed([sql.Identifier(key), sql.SQL(' = '), sql.Placeholder(key)]) for key in data.keys()
             ),
             id=sql.Placeholder('plant_id')
             )
     
     with connection.cursor() as cursor:
-        print(cursor.mogrify(sql_query, data))
+        # print(cursor.mogrify(sql_query, data))
         cursor.execute(sql_query, data)
         connection.commit()
-        plant_id = str(cursor.fetchone()[0])
-        return plant_id
-
+        plant = cursor.fetchone()
+        headers = [column[0] for column in cursor.description]
+        return dict(zip(headers, plant))
 
 def delete_plant(connection: psycopg2, plant_id: int):
     #FIXME: can't delete when referenced on water table
     with connection.cursor() as cursor:
-        cursor.execute("DELETE FROM * WHERE plant_id=%s;", 
+        cursor.execute("""
+                       DELETE FROM plants
+                       WHERE plant_id=%s
+                       RETURNING *;
+                       """,
                     (plant_id,))
         connection.commit()
         return plant_id

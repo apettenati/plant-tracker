@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import psycopg2
 from configparser import ConfigParser
 from planttracker.queries.plant import add_plant, get_plant, update_plant, delete_plant 
@@ -41,38 +41,28 @@ def plants():
         plant_id = data.get('plant-id')
         plant = get_plant(connection, plant_id)
         if plant:
-            # id, plant_name, adoption_date, death_date, pot_size, purchase_location, purchase_price, user_id = plant
-            # return f"""Here are the details for plant {id}:
-            #         User ID: {user_id}
-            #         Plant name: {plant_name}
-            #         Adoption Date: {adoption_date}
-            #         Death Date: {death_date}
-            #         Pot Size: {pot_size}
-            #         Purchase Location: {purchase_location}
-            #         Purchase Price: {purchase_price}
-            #         """
-            return str(plant)
+            return jsonify(plant)
         else:
             return f'Plant {plant_id} is not a valid plant'
     '''create new plant'''
-    if request.method == 'POST':
+    if request.method == 'PUT':
         data = request.form
         plant_name = data.get('plant-name')
         adoption_date = data.get('adoption-date')
         pot_size = data.get('pot-size')
         purchase_location = data.get('purchase-location')
         purchase_price = data.get('purchase-price')
-        plant_id = add_plant(connection, plant_name, adoption_date, pot_size, purchase_location, purchase_price)
-        if plant_id:
-            return f"Plant {plant_id} was created successfully!"
+        plant = add_plant(connection, plant_name, adoption_date, pot_size, purchase_location, purchase_price)
+        if plant:
+            return jsonify(plant)
         else:
             return f'Plant was not added'
     '''edit existing plant'''
-    if request.method == 'PUT':
+    if request.method == 'POST':
         data = request.form.to_dict()
-        plant_id = update_plant(connection, data)
-        if plant_id:
-            return plant_id
+        plant = update_plant(connection, data)
+        if plant:
+            return jsonify(plant)
         else:
             return 'Plant {plant_id} was not updated'
     '''delete existing plant'''
@@ -81,29 +71,31 @@ def plants():
         plant_id = data.get('plant-id')
         plant_exists = get_plant(connection, plant_id)
         if plant_exists:
-            plant_id = delete_plant(connection, plant_id)
-            return plant_id
+            delete_plant(connection, plant_id)
+            return jsonify(plant_id)
         else:
             return f'Plant {plant_id} does not exist'
     
 
-@app.route('/water', methods=['POST', 'GET', 'DELETE'])
+@app.route('/water', methods=['PUT', 'GET', 'DELETE'])
 def water():
-    if request.method == 'POST':
+    '''add timestamp for plant watering'''
+    if request.method == 'PUT':
         data = request.form
         plant_id = data.get('plant-id')
-        plant = water_plant(connection, plant_id)
+        plant = jsonify(water_plant(connection, plant_id))
         if plant:
             return plant
         else:
             return f'Plant {plant_id} does not exist'
+    '''get water timestamps'''
     if request.method == 'GET':
         data = request.form
         plant_id = data.get('plant-id')
         if plant_id is None:
-            return get_water_tracker(connection)
+            return jsonify(get_water_tracker(connection))
         else:
-            return get_last_watered(connection, plant_id)
+            return jsonify(get_last_watered(connection, plant_id))
 
 @app.route('/user')
 def user():
