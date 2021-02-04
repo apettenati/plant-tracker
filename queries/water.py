@@ -1,5 +1,6 @@
 from datetime import datetime
 import psycopg2
+from psycopg2 import extras
 from psycopg2 import sql
 
 
@@ -43,4 +44,6 @@ def get_last_watered(connection: psycopg2, plant_id: int) -> dict:
 
     with connection.cursor() as cursor:
         cursor.execute(sql_query, (plant_id,))
-        return cursor.fetchall()
+        plant = cursor.fetchall()
+        headers = [column[0] for column in cursor.description]
+        return [dict(zip(headers, row)) for row in plant]

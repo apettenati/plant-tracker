@@ -60,3 +60,14 @@ ALTER TABLE plants ADD COLUMN user_id INTEGER;
 ALTER TABLE plants ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES users (user_id) MATCH FULL;
 
 INSERT INTO users (name) VALUES ('Amanda');
+
+-- substituted dates for timestamps
+-- added event_ids to activity tables and made PK
+
+-- updated FK to drop when plant_id is dropped
+ALTER TABLE trim_tracker
+DROP CONSTRAINT trim_tracker_plant_id_fkey,
+ADD CONSTRAINT trim_tracker_plant_id_fkey
+   FOREIGN KEY (plant_id)
+   	REFERENCES plants(plant_id)
+   	ON DELETE CASCADE;

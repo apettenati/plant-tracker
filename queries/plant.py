@@ -1,6 +1,7 @@
 from datetime import datetime
 import psycopg2
 from psycopg2 import sql
+from psycopg2 import extras 
 
 
 def get_plant(connection: psycopg2, plant_id: int) -> dict:
