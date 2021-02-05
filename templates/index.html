@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <title> Plant Programmer </title>
+    </head>
+    <body>
+        <h1> Plants </h1>
+        <table>
+            <tr>
+                <th> </th>
+                <th> Plant ID </th>
+                <th> Plant Name </th>
+                <th> Adoption Date </th>
+                <!-- <th> Death Date </th> -->
+                <th> Pot Size </th>
+                <th> Purchase Location </th>
+                <th> Purchase Price </th>
+                <!-- <th> User ID </th> -->
+                <th> </th>
+                <th> </th>
+            </tr>
+        {% for plant in plants %}
+        <tr>
+            <td><input type="checkbox" name="plant_checkbox" value={{plant.plant_id}} /></td>
+            <td> {{ plant.plant_id }} </td>
+            <td> {{ plant.plant_name }} </td>
+            <td> {{ plant.adoption_date }} </td>
+            <!-- <td> {{ plant.death_date }} </td> -->
+            <td> {{ plant.pot_size }} </td>
+            <td> {{ plant.purchase_location }} </td>
+            <td> {{ plant.purchase_price }} </td>
+            <!-- <td> {{ plant.user_id }} </td> -->
+            <td><input type="submit" name="water_plant" value="Water"></td>
+            <td><input type="submit" name="update_plant" value="Update"></td>
+        </tr>
+        {% endfor %}
+        </table>
+       
+        <br>
+
+        <form method="POST" action="/plants">
+        <input type="submit" value="Add New Plant!">
+        </form>
+
+    </body>
+</html>

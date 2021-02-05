@@ -1,7 +1,7 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import psycopg2
 from configparser import ConfigParser
-from planttracker.queries.plant import add_plant, get_plant, update_plant, delete_plant 
+from planttracker.queries.plant import get_all_plants, add_plant, get_plant, update_plant, delete_plant 
 from planttracker.queries.user import get_user
 from planttracker.queries.water import get_last_watered, get_water_tracker, water_plant
 
@@ -30,8 +30,8 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return 'Hello World'
-
+    plants = get_all_plants(connection)
+    return render_template('index.html', plants=plants)
 
 @app.route('/plants', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def plants():
@@ -45,7 +45,7 @@ def plants():
         else:
             return f'Plant {plant_id} is not a valid plant'
     '''create new plant'''
-    if request.method == 'PUT':
+    if request.method == 'POST':
         data = request.form
         plant_name = data.get('plant-name')
         adoption_date = data.get('adoption-date')
@@ -58,7 +58,7 @@ def plants():
         else:
             return f'Plant was not added'
     '''edit existing plant'''
-    if request.method == 'POST':
+    if request.method == 'PUT':
         data = request.form.to_dict()
         plant = update_plant(connection, data)
         if plant:
@@ -75,12 +75,13 @@ def plants():
             return jsonify(plant_id)
         else:
             return f'Plant {plant_id} does not exist'
+    plant_id = 202
     
 
-@app.route('/water', methods=['PUT', 'GET', 'DELETE'])
+@app.route('/water', methods=['POST', 'GET', 'DELETE'])
 def water():
     '''add timestamp for plant watering'''
-    if request.method == 'PUT':
+    if request.method == 'POST':
         data = request.form
         plant_id = data.get('plant-id')
         plant = jsonify(water_plant(connection, plant_id))
