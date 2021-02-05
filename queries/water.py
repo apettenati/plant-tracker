@@ -34,7 +34,7 @@ def get_water_tracker(connection: psycopg2) -> dict:
         cursor.execute(sql_query)
         return cursor.fetchall()[0][0]
 
-def get_last_watered(connection: psycopg2, plant_id: int) -> dict:
+def get_last_watered(connection: psycopg2, plant_id: int) -> list:
     sql_query = sql.SQL("""
                  SELECT * 
                  FROM water_tracker
