@@ -66,7 +66,6 @@ def update_plant(connection: psycopg2, data: dict) -> int:
         return dict(zip(headers, plant))
 
 def delete_plant(connection: psycopg2, plant_id: int):
-    #FIXME: can't delete when referenced on water table
     with connection.cursor() as cursor:
         cursor.execute("""
                        DELETE FROM plants

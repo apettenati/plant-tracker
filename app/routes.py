@@ -1,9 +1,10 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect, flash
 import psycopg2
 from configparser import ConfigParser
-from planttracker.queries.plant import get_all_plants, add_plant, get_plant, update_plant, delete_plant 
-from planttracker.queries.user import get_user
-from planttracker.queries.water import get_last_watered, get_water_tracker, water_plant
+from .queries.plant import get_all_plants, add_plant, get_plant, update_plant, delete_plant 
+from .queries.user import get_user
+from .queries.water import get_last_watered, get_water_tracker, water_plant
+from app import app
 
 ''' establish Postgres connection'''
 config = ConfigParser()
@@ -24,8 +25,7 @@ connection = psycopg2.connect(
 )
 
 
-'''establish flask app''' 
-app = Flask(__name__)
+# app = Flask(__name__)
 
 
 @app.route('/')
@@ -69,13 +69,15 @@ def plants():
     if request.method == 'DELETE':
         data = request.form
         plant_id = data.get('plant-id')
+        # for plant in request.form.getlist('plant_checkbox'):
         plant_exists = get_plant(connection, plant_id)
         if plant_exists:
             delete_plant(connection, plant_id)
+            # flash("Successfully Deleted!")
+        # return redirect('/')
             return jsonify(plant_id)
         else:
             return f'Plant {plant_id} does not exist'
-    plant_id = 202
     
 
 @app.route('/water', methods=['POST', 'GET', 'DELETE'])

@@ -17,6 +17,7 @@
                 <!-- <th> User ID </th> -->
                 <th> </th>
                 <th> </th>
+                <th> </th>
             </tr>
         {% for plant in plants %}
         <tr>
@@ -31,6 +32,7 @@
             <!-- <td> {{ plant.user_id }} </td> -->
             <td><input type="submit" name="water_plant" value="Water"></td>
             <td><input type="submit" name="update_plant" value="Update"></td>
+            <td><input type="submit" name="delete_plant" value="Delete"></td>
         </tr>
         {% endfor %}
         </table>
