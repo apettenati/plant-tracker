@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Add New Plant</h1>
+<form action="" method="POST" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.plant_name.label }} </br>
+        {{ form.plant_name(size=32) }}
+        {% for error in form.plant_name.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.adoption_date.label }} </br>
+        {{ form.adoption_date(size=32) }}
+        {% for error in form.adoption_date.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.pot_size.label }} </br>
+        {{ form.pot_size(size=32) }}
+        {% for error in form.pot_size.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.purchase_location.label }} </br>
+        {{ form.purchase_location(size=32) }}
+        {% for error in form.purchase_location.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.purchase_price.label }} </br>
+        {{ form.purchase_price(size=32) }}
+        {% for error in form.purchase_price.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+{% endblock %}

@@ -1,10 +1,11 @@
-from flask import Flask, request, jsonify, render_template, redirect, flash
+from flask import request, jsonify, render_template, redirect, flash, url_for
 import psycopg2
 from configparser import ConfigParser
-from .queries.plant import get_all_plants, add_plant, get_plant, update_plant, delete_plant 
-from .queries.user import get_user
-from .queries.water import get_last_watered, get_water_tracker, water_plant
+from app.queries.plant import get_all_plants, create_plant, get_plant, update_plant, delete_plant 
+from app.queries.user import get_user
+from app.queries.water import get_last_watered, get_water_tracker, water_plant
 from app import app
+from app.forms import AddPlantForm
 
 ''' establish Postgres connection'''
 config = ConfigParser()
@@ -25,11 +26,8 @@ connection = psycopg2.connect(
 )
 
 
-# app = Flask(__name__)
-
-
 @app.route('/')
-def home():
+def index():
     plants = get_all_plants(connection)
     return render_template('index.html', plants=plants)
 
@@ -78,7 +76,17 @@ def plants():
             return jsonify(plant_id)
         else:
             return f'Plant {plant_id} does not exist'
-    
+
+@app.route('/add-plant', methods=['GET', 'POST'])
+def add_plant():
+    form = AddPlantForm()
+    if form.validate_on_submit():
+        plant = create_plant(connection, form.plant_name.data, form.adoption_date.data, form.pot_size.data, form.purchase_location.data, form.purchase_price.data)
+        if plant:
+            flash('New plant submitted')
+            return redirect(url_for('index'))
+    return render_template('add_plant.html', title='Add Plant', form=form)
+
 
 @app.route('/water', methods=['POST', 'GET', 'DELETE'])
 def water():

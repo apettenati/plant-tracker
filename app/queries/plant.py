@@ -20,7 +20,7 @@ def get_plant(connection: psycopg2, plant_id: int) -> dict:
         if plant is not None:
             return dict(zip(headers, plant))
 
-def add_plant(connection: psycopg2,
+def create_plant(connection: psycopg2,
               plant_name: str,
               adoption_date: datetime=None,
               pot_size: float=None,

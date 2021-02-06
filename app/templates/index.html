@@ -1,8 +1,7 @@
-<html>
-    <head>
-        <title> Plant Programmer </title>
-    </head>
-    <body>
+{% extends "base.html" %}
+
+{% block content %}
+
         <h1> Plants </h1>
         <table>
             <tr>
@@ -39,9 +38,4 @@
        
         <br>
 
-        <form method="POST" action="/plants">
-        <input type="submit" value="Add New Plant!">
-        </form>
-
-    </body>
-</html>
+{% endblock %}
