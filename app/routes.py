@@ -29,32 +29,13 @@ connection = psycopg2.connect(
 @app.route('/')
 def index():
     plants = get_all_plants(connection)
+    # for plant in plants['plant_id']:
+        # waterings = jsonify(get_last_watered(connection, plant))
+        # last_watered = waterings[0]['timestamp'] 
     return render_template('index.html', plants=plants)
 
 @app.route('/plants', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def plants():
-    '''get data for existing plant'''
-    if request.method == 'GET':
-        data = request.form
-        plant_id = data.get('plant-id')
-        plant = get_plant(connection, plant_id)
-        if plant:
-            return jsonify(plant)
-        else:
-            return f'Plant {plant_id} is not a valid plant'
-    '''create new plant'''
-    if request.method == 'POST':
-        data = request.form
-        plant_name = data.get('plant-name')
-        adoption_date = data.get('adoption-date')
-        pot_size = data.get('pot-size')
-        purchase_location = data.get('purchase-location')
-        purchase_price = data.get('purchase-price')
-        plant = add_plant(connection, plant_name, adoption_date, pot_size, purchase_location, purchase_price)
-        if plant:
-            return jsonify(plant)
-        else:
-            return f'Plant was not added'
     '''edit existing plant'''
     if request.method == 'PUT':
         data = request.form.to_dict()
@@ -87,6 +68,15 @@ def add_plant():
             return redirect(url_for('index'))
     return render_template('add_plant.html', title='Add Plant', form=form)
 
+@app.route('/delete-plant', methods=['GET', 'POST'])
+def delete_plant():
+    if request.method == 'POST':
+        for id in request.form.getlist('plant_checkbox'):
+            print(id)
+            delete_plant(connection, id)
+        flash("Successfully Deleted!")
+        return redirect('/')
+    
 
 @app.route('/water', methods=['POST', 'GET', 'DELETE'])
 def water():
