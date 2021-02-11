@@ -2,40 +2,59 @@
 
 {% block content %}
 
-        <h1> Plants </h1>
-        <table>
+        <h2 class="text-muted"> Your Plants </h2>
+            <div>
+                <button class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-droplet-half" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M7.21.8C7.69.295 8 0 8 0c.109.363.234.708.371 1.038.812 1.946 2.073 3.35 3.197 4.6C12.878 7.096 14 8.345 14 10a6 6 0 0 1-12 0C2 6.668 5.58 2.517 7.21.8zm.413 1.021A31.25 31.25 0 0 0 5.794 3.99c-.726.95-1.436 2.008-1.96 3.07C3.304 8.133 3 9.138 3 10c0 0 2.5 1.5 5 .5s5-.5 5-.5c0-1.201-.796-2.157-2.181-3.7l-.03-.032C9.75 5.11 8.5 3.72 7.623 1.82z"/>
+                        <path fill-rule="evenodd" d="M4.553 7.776c.82-1.641 1.717-2.753 2.093-3.13l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448z"/>
+                      </svg>
+                </button>
+                <button class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                    </svg>
+                </button>
+                <button class="btn btn-danger">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                    </svg>
+                </button>
+            </div>
+        <table class="table table-striped table-bordered table-hover table-sm">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Plant ID </th>
+                    <th scope="col">Plant Name </th>
+                    <th scope="col">Last Watered </th>
+                    <th scope="col">Adoption Date </th>
+                    <th scope="col">Death Date </th> -->
+                    <th scope="col">Pot Size </th>
+                    <th scope="col">Purchase Location </th>
+                    <th scope="col">Purchase Price </th>
+                    <th scope="col">User ID </th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for plant in plants %}
             <tr>
-                <th> </th>
-                <th> Plant ID </th>
-                <th> Plant Name </th>
-                <th> Adoption Date </th>
-                <!-- <th> Death Date </th> -->
-                <th> Pot Size </th>
-                <th> Purchase Location </th>
-                <th> Purchase Price </th>
-                <!-- <th> User ID </th> -->
-                <th> </th>
-                <th> </th>
-                <th> </th>
+                <td><input type="checkbox" name="plant_checkbox" value={{plant.plant_id}} /></td>
+                <td> {{ plant.plant_id }} </td>
+                <td> {{ plant.plant_name }} </td>
+                <td> </td>
+                <td> {{ plant.adoption_date }} </td>
+                <td> {{ plant.death_date }} </td>
+                <td> {{ plant.pot_size }} </td>
+                <td> {{ plant.purchase_location }} </td>
+                <td> {{ plant.purchase_price }} </td>
+                <td> {{ plant.user_id }} </td>
             </tr>
-        {% for plant in plants %}
-        <tr>
-            <td><input type="checkbox" name="plant_checkbox" value={{plant.plant_id}} /></td>
-            <td> {{ plant.plant_id }} </td>
-            <td> {{ plant.plant_name }} </td>
-            <td> {{ plant.adoption_date }} </td>
-            <!-- <td> {{ plant.death_date }} </td> -->
-            <td> {{ plant.pot_size }} </td>
-            <td> {{ plant.purchase_location }} </td>
-            <td> {{ plant.purchase_price }} </td>
-            <!-- <td> {{ plant.user_id }} </td> -->
-            <td><input type="submit" name="water_plant" value="Water"></td>
-            <td><input type="submit" name="update_plant" value="Update"></td>
-            <td><input type="submit" name="delete_plant" value="Delete"></td>
-        </tr>
-        {% endfor %}
+            {% endfor %}
+            </tbody>
         </table>
        
-        <br>
+    </br>
 
 {% endblock %}
